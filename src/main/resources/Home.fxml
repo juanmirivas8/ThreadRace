@@ -11,7 +11,6 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane fx:id="pane" prefHeight="700.0" prefWidth="1294.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Home">
    <children>
       <ImageView fitHeight="400.0" fitWidth="401.0" layoutX="-98.0" layoutY="299.0">
@@ -42,12 +41,12 @@
       <Line endX="700.0" layoutX="500.0" layoutY="350.0" startX="-100.0" />
       <Line endX="700.0" layoutX="500.0" layoutY="500.0" startX="-100.0" />
       <Line endX="700.0" layoutX="500.0" layoutY="645.0" startX="-100.0" />
-      <ImageView fx:id="ferrari" fitHeight="50.0" fitWidth="200.0" layoutX="392.0" layoutY="301.0">
+      <ImageView fx:id="ferrari" fitHeight="50.0" fitWidth="200.0" layoutX="400.0" layoutY="301.0">
          <image>
             <Image url="@ferrari.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="mercedes" fitHeight="129.0" fitWidth="200.0" layoutX="387.0" layoutY="403.0">
+      <ImageView fx:id="mercedes" fitHeight="129.0" fitWidth="200.0" layoutX="400.0" layoutY="403.0">
          <image>
             <Image url="@mercedes.png" />
          </image>

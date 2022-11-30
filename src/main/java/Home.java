@@ -22,11 +22,11 @@ public class Home implements Initializable {
     private Thread t1,t2,t3;
     private Car car1,car2,car3;
 
+    public Boolean racePaused = false, raceStarted = false, raceFinished = false;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        car1 = new Car(this,redbull);
-        car2 = new Car(this,mercedes);
-        car3 = new Car(this,ferrari);
+        car3 = new Car(this);
 
         btn_green.setOnAction(event ->{
             ferrari.xProperty().bindBidirectional(car3.pixels);
@@ -35,7 +35,9 @@ public class Home implements Initializable {
         });
 
         btn_ambar.setOnAction(event -> {
-            t3.interrupt();
+            synchronized (this){
+               this.notifyAll();
+            }
         });
     }
 }
