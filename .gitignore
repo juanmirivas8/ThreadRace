@@ -1,0 +1,12 @@
+*
+!*/
+.idea
+target
+!*.java
+!pom.xml
+!.gitignore
+!logging.properties
+!*.fxml
+!*.png
+!*.jpg
+!*.css
