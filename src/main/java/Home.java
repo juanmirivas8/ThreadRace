@@ -1,9 +1,13 @@
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import utils.Utils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,6 +23,9 @@ public class Home implements Initializable {
     @FXML
     public Button btn_green,btn_red,btn_ambar;
 
+    @FXML
+    public AnchorPane pane;
+
     private Thread t1,t2,t3;
     private Car car1,car2,car3;
 
@@ -29,15 +36,51 @@ public class Home implements Initializable {
         car3 = new Car(this);
 
         btn_green.setOnAction(event ->{
-            ferrari.xProperty().bindBidirectional(car3.pixels);
-            t3 = new Thread(car3);
-            t3.start();
+            if(!raceStarted){
+                raceStarted = true;
+                raceFinished = false;
+                t3 = new Thread(car3);
+                t3.start();
+            }else{
+                Utils.mostrarAlerta("Error","La carrera ya ha comenzado","Puedes pausar la carrera pulsando" +
+                        " el boton amarillo o terminarla pulsando el boton rojo");
+            }
         });
 
         btn_ambar.setOnAction(event -> {
-            synchronized (this){
-               this.notifyAll();
+            if(raceStarted && !raceFinished) {
+                synchronized (this) {
+                    racePaused = !racePaused;
+                    this.notifyAll();
+                }
+            }else{
+                Utils.mostrarAlerta("Error","La carrera no ha comenzado","Puedes iniciar la carrera pulsando" +
+                        " el boton verde");
             }
         });
+
+        btn_red.setOnAction(event -> {
+            if(raceStarted){
+                synchronized (this){
+                    raceFinished = true;
+                    raceStarted = false;
+                    racePaused = false;
+                    t3.interrupt();
+                }
+            }else{
+                Utils.mostrarAlerta("Error","La carrera no ha comenzado","Puedes iniciar la carrera pulsando" +
+                        " el boton verde");
+            }
+        });
+
+        Platform.runLater(() ->{
+            Utils.closeRequest((Stage)pane.getScene().getWindow());
+        });
+
+        bindings();
+    }
+
+    private void bindings(){
+        ferrari.xProperty().bindBidirectional(car3.pixels);
     }
 }

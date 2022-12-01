@@ -8,25 +8,52 @@ public class Car implements Runnable{
 
     private final Home home;
     public IntegerProperty pixels = new SimpleIntegerProperty(0);
+    public IntegerProperty speed = new SimpleIntegerProperty(0);
+    public IntegerProperty time = new SimpleIntegerProperty(0);
+    public IntegerProperty meters = new SimpleIntegerProperty(3000);
+    private Timer t;
 
     public Car(Home home) {
         this.home = home;
     }
     @Override
     public void run() {
-        Timer t =  new Timer();
-        try{
-            t.scheduleAtFixedRate(new java.util.TimerTask() {
-                @Override
-                public void run() {
-                    pixels.set(pixels.get()+10);
+        t = resumeRace();
+        loop: while (!home.raceFinished){
+            System.out.println("Running");
+            try{
+                synchronized (home){
+                    home.wait();
+                    if(home.racePaused){
+                        System.out.println("Paused");
+                        t.cancel();
+                    }else{
+                        System.out.println("Resumed");
+                        t = resumeRace();
+                    }
                 }
-            },0,100);
-            synchronized (home){
-                home.wait();
+            } catch (InterruptedException e) {
+                resetCar();
+
+                break loop;
             }
-        }catch (InterruptedException e){
-            t.cancel();
         }
     }
+
+    private Timer resumeRace(){
+        t =  new Timer();
+        t.scheduleAtFixedRate(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                pixels.set(pixels.get()+10);
+            }
+        },0,100);
+        return t;
+    }
+
+    private void resetCar(){
+        pixels.set(0);
+        t.cancel();
+    }
+
 }

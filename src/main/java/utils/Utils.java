@@ -43,7 +43,7 @@ public class Utils {
             Stage s =(Stage)a.getDialogPane().getScene().getWindow();
             s.initOwner(stage);
             s.toFront();
-            a.showAndWait().filter(buttonType -> buttonType== ButtonType.OK).ifPresentOrElse(buttonType -> {Platform.exit();},windowEvent::consume);
+            a.showAndWait().filter(buttonType -> buttonType== ButtonType.OK).ifPresentOrElse(buttonType -> {Platform.exit();System.exit(0);},windowEvent::consume);
         });
     }
 
