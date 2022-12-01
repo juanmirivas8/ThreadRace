@@ -69,5 +69,15 @@ public class Utils {
         });
     }
 
+    public static Integer randomNumber(Integer inf, Integer sup) {
+        Integer aux = 0;
+        if (inf > sup) {
+            aux = inf;
+            inf = sup;
+            sup = aux;
+        }
+        return  Integer.valueOf((int)(Math.random() * (sup - inf + 1) + inf));
+    }
+
 
 }

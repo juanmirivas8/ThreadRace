@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 public class Home implements Initializable {
 
     @FXML
-    public Label time_rb,time_m,time_f,speed_rb,speed_m,speed_f,pos_rb,pos_m,pos_f,meters_rb,meters_m,meters_f;
+    public Label speed_rb,speed_m,speed_f,pos_rb,pos_m,pos_f,meters_rb,meters_m,meters_f;
 
     @FXML
     public ImageView ferrari,mercedes,redbull;
@@ -26,8 +26,8 @@ public class Home implements Initializable {
     @FXML
     public AnchorPane pane;
 
-    private Thread t1,t2,t3;
-    private Car car1,car2,car3;
+    public Thread t1,t2,t3;
+    public Car car1,car2,car3;
 
     public Boolean racePaused = false, raceStarted = false, raceFinished = false;
 
@@ -82,5 +82,6 @@ public class Home implements Initializable {
 
     private void bindings(){
         ferrari.xProperty().bindBidirectional(car3.pixels);
+        speed_f.textProperty().bindBidirectional(car3.speed);
     }
 }
