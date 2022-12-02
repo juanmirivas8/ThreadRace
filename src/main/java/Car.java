@@ -18,7 +18,7 @@ public class Car implements Runnable {
     private final Label speedLabel, positionLabel, metersLabel;
     public IntegerProperty pixels = new SimpleIntegerProperty(0);
     public SimpleStringProperty speed = new SimpleStringProperty("0");
-    public SimpleStringProperty meters = new SimpleStringProperty("1000");
+    public volatile SimpleStringProperty meters = new SimpleStringProperty("2500");
 
     public SimpleStringProperty position = new SimpleStringProperty("3");
     private Timer t;
@@ -33,7 +33,6 @@ public class Car implements Runnable {
 
         Platform.runLater(() -> {
             speedLabel.textProperty().bind(speed);
-            positionLabel.textProperty().bind(position);
             metersLabel.textProperty().bind(meters);
             carImage.xProperty().bind(pixels);
         });
@@ -49,19 +48,12 @@ public class Car implements Runnable {
                 synchronized (home) {
                     home.wait();
                     if (home.racePaused) {
-                        System.out.println("Paused");
                         t.cancel();
                     } else {
-                        System.out.println("Resumed");
                         t = resumeRace();
                     }
                 }
             } catch (InterruptedException e) {
-                if(home.raceFinished && meters.get().equals("0")){
-                    Platform.runLater(() -> {
-                        Utils.mostrarAlerta("Carrera finalizada", "La carrera ha finalizado", "La carrera ha finalizado");
-                    });
-                }
                 reset();
                 break;
             }
@@ -74,37 +66,39 @@ public class Car implements Runnable {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    int metersPerSecond = Utils.randomNumber(80, 85);
+                    int metersPerSecond = Utils.randomNumber(75, 85);
                     speed.set(String.valueOf((int) (metersPerSecond * 3.6)));
                     meters.set(String.valueOf(Integer.parseInt(meters.get()) - metersPerSecond));
                     position.set(position());
                     pixels.set(pixels.get() + (metersPerSecond * 700) / 3000);
                     if(Integer.parseInt(meters.get()) <= 0){
+                        home.winner = name;
                         meters.set("0");
                         home.raceFinished = true;
                         home.t3.interrupt();
+                        home.t2.interrupt();
+                        home.t1.interrupt();
                     }
                 });
 
             }
-        }, 0, 500);
+        }, 0, 200);
         return t;
     }
 
     private void reset() {
-        home.raceFinished = true;
         home.raceStarted = false;
         home.racePaused = false;
         Platform.runLater(() -> {
             pixels.set(0);
             speed.set("0");
-            meters.set("3000");
+            meters.set("2500");
             position.set("3");
         });
         t.cancel();
     }
 
-    private String position() {
+    public String position() {
         List<Car> cars = new ArrayList<>();
         if (home.car1 != null && !this.equals(home.car1)) cars.add(home.car1);
         if (home.car2 != null && !this.equals(home.car2)) cars.add(home.car2);
@@ -114,7 +108,7 @@ public class Car implements Runnable {
         int car1MetersLeft = Integer.parseInt(cars.get(0).meters.get());
         int car2MetersLeft = Integer.parseInt(cars.get(1).meters.get());
 
-        if (myMetersLeft > car1MetersLeft && myMetersLeft > car2MetersLeft) {
+        if (myMetersLeft >= car1MetersLeft && myMetersLeft >= car2MetersLeft) {
             return "3";
         } else if (myMetersLeft <= car1MetersLeft && myMetersLeft <= car2MetersLeft) {
             return "1";
