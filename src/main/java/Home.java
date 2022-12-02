@@ -3,7 +3,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -33,8 +32,9 @@ public class Home implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        car3 = new Car(this);
-
+        car3 = new Car(this, ferrari);
+        car2 = new Car(this, mercedes);
+        car1 = new Car(this, redbull);
         btn_green.setOnAction(event ->{
             if(!raceStarted){
                 raceStarted = true;
@@ -83,5 +83,17 @@ public class Home implements Initializable {
     private void bindings(){
         ferrari.xProperty().bindBidirectional(car3.pixels);
         speed_f.textProperty().bindBidirectional(car3.speed);
+        pos_f.textProperty().bindBidirectional(car3.position);
+        meters_f.textProperty().bindBidirectional(car3.meters);
+
+        mercedes.xProperty().bindBidirectional(car2.pixels);
+        speed_m.textProperty().bindBidirectional(car2.speed);
+        pos_m.textProperty().bindBidirectional(car2.position);
+        meters_m.textProperty().bindBidirectional(car2.meters);
+
+        redbull.xProperty().bindBidirectional(car1.pixels);
+        speed_rb.textProperty().bindBidirectional(car1.speed);
+        pos_rb.textProperty().bindBidirectional(car1.position);
+        meters_rb.textProperty().bindBidirectional(car1.meters);
     }
 }
