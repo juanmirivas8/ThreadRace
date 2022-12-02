@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import utils.JAXBManager;
 import utils.Utils;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -46,7 +47,11 @@ public class Home implements Initializable {
 
 
     public Home(){
-        winners = JAXBManager.unmarshall("src/main/resources/winners.xml", Winners.class);
+        if(new File("winners.xml").exists()){
+            winners = JAXBManager.unmarshall("winners.xml", Winners.class);
+        }else{
+            winners = new Winners();
+        }
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -120,12 +125,12 @@ public class Home implements Initializable {
                     pos_m.setText(car2.position());
                     pos_rb.setText(car1.position());
                     if(raceFinished){
+                        checker.cancel();
                         raceFinished = false;
                         Utils.mostrarAlerta("Carrera finalizada", "El ganador es: "+winner, "Puedes iniciar una nueva carrera pulsando el boton verde");
-                        checker.cancel();
                         winners.addWinner(winner);
                         winnersList.setItems(FXCollections.observableArrayList(winners.winners));
-                        JAXBManager.marshall("src/main/resources/winners.xml",winners);
+                        JAXBManager.marshall("winners.xml",winners);
                     }
                 });
 

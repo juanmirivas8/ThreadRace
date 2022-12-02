@@ -43,7 +43,6 @@ public class Car implements Runnable {
     public void run() {
         t = resumeRace();
         while (!home.raceFinished) {
-            System.out.println("Running");
             try {
                 synchronized (home) {
                     home.wait();

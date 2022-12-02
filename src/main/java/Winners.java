@@ -9,10 +9,10 @@ import java.util.ArrayList;
 public class Winners {
     public ArrayList<String> winners;
     public Winners(){
-        winners = new ArrayList<String>();
+        winners = new ArrayList<>();
     }
 
     public void addWinner(String winner){
-        winners.add(winner);
+        winners.add(0,winner);
     }
 }
