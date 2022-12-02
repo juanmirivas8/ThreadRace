@@ -2,6 +2,7 @@ import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import utils.Utils;
 
@@ -13,6 +14,8 @@ public class Car implements Runnable {
 
     private final Home home;
     private final ImageView carImage;
+    private final String name;
+    private final Label speedLabel, positionLabel, metersLabel;
     public IntegerProperty pixels = new SimpleIntegerProperty(0);
     public SimpleStringProperty speed = new SimpleStringProperty("0");
     public SimpleStringProperty meters = new SimpleStringProperty("1000");
@@ -20,9 +23,20 @@ public class Car implements Runnable {
     public SimpleStringProperty position = new SimpleStringProperty("3");
     private Timer t;
 
-    public Car(Home home, ImageView car) {
+    public Car(Home home, ImageView car, String name, Label speedLabel, Label positionLabel, Label metersLabel) {
         this.home = home;
         this.carImage = car;
+        this.name = name;
+        this.speedLabel = speedLabel;
+        this.positionLabel = positionLabel;
+        this.metersLabel = metersLabel;
+
+        Platform.runLater(() -> {
+            speedLabel.textProperty().bind(speed);
+            positionLabel.textProperty().bind(position);
+            metersLabel.textProperty().bind(meters);
+            carImage.xProperty().bind(pixels);
+        });
     }
 
 
@@ -43,6 +57,11 @@ public class Car implements Runnable {
                     }
                 }
             } catch (InterruptedException e) {
+                if(home.raceFinished && meters.get().equals("0")){
+                    Platform.runLater(() -> {
+                        Utils.mostrarAlerta("Carrera finalizada", "La carrera ha finalizado", "La carrera ha finalizado");
+                    });
+                }
                 reset();
                 break;
             }
@@ -61,6 +80,8 @@ public class Car implements Runnable {
                     position.set(position());
                     pixels.set(pixels.get() + (metersPerSecond * 700) / 3000);
                     if(Integer.parseInt(meters.get()) <= 0){
+                        meters.set("0");
+                        home.raceFinished = true;
                         home.t3.interrupt();
                     }
                 });

@@ -28,17 +28,18 @@ public class Home implements Initializable {
     public Thread t1,t2,t3;
     public Car car1,car2,car3;
 
-    public Boolean racePaused = false, raceStarted = false, raceFinished = false;
+    public Boolean racePaused = false, raceStarted = false, raceStopped = false, raceFinished = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        car3 = new Car(this, ferrari);
-        car2 = new Car(this, mercedes);
-        car1 = new Car(this, redbull);
+        car3 = new Car(this, ferrari, "Ferrari", speed_f, pos_f, meters_f);
+        car2 = new Car(this, mercedes, "Mercedes", speed_m, pos_m, meters_m);
+        car1 = new Car(this, redbull, "Red Bull", speed_rb, pos_rb, meters_rb);
         btn_green.setOnAction(event ->{
             if(!raceStarted){
                 raceStarted = true;
                 raceFinished = false;
+                raceStopped = false;
                 t3 = new Thread(car3);
                 t3.start();
             }else{
@@ -62,9 +63,10 @@ public class Home implements Initializable {
         btn_red.setOnAction(event -> {
             if(raceStarted){
                 synchronized (this){
-                    raceFinished = true;
+                    raceFinished = false;
                     raceStarted = false;
                     racePaused = false;
+                    raceStopped = true;
                     t3.interrupt();
                 }
             }else{
@@ -76,24 +78,5 @@ public class Home implements Initializable {
         Platform.runLater(() ->{
             Utils.closeRequest((Stage)pane.getScene().getWindow());
         });
-
-        bindings();
-    }
-
-    private void bindings(){
-        ferrari.xProperty().bindBidirectional(car3.pixels);
-        speed_f.textProperty().bindBidirectional(car3.speed);
-        pos_f.textProperty().bindBidirectional(car3.position);
-        meters_f.textProperty().bindBidirectional(car3.meters);
-
-        mercedes.xProperty().bindBidirectional(car2.pixels);
-        speed_m.textProperty().bindBidirectional(car2.speed);
-        pos_m.textProperty().bindBidirectional(car2.position);
-        meters_m.textProperty().bindBidirectional(car2.meters);
-
-        redbull.xProperty().bindBidirectional(car1.pixels);
-        speed_rb.textProperty().bindBidirectional(car1.speed);
-        pos_rb.textProperty().bindBidirectional(car1.position);
-        meters_rb.textProperty().bindBidirectional(car1.meters);
     }
 }
